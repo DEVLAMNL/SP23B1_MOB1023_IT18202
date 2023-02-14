@@ -4,11 +4,13 @@
  */
 package Lab1;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Admin
  */
-public class product {
+public class product implements Serializable {
 
     private String Ten;
     private double Price;
@@ -35,6 +37,11 @@ public class product {
 
     public void setPrice(double Price) {
         this.Price = Price;
+    }
+
+    @Override
+    public String toString() {
+        return "product{" + "Ten=" + Ten + ", Price=" + Price + '}';
     }
 
 }

@@ -1,4 +1,3 @@
-
 package Lab1;
 
 import java.util.ArrayList;
@@ -29,6 +28,11 @@ public class IServiceProduct implements Interface {
     @Override
     public ArrayList<product> getList() {
         return this.listproduct;
+    }
+
+    @Override
+    public void setList(ArrayList<product> list) {
+        list = listproduct;
     }
 
 }

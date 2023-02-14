@@ -1,17 +1,28 @@
 package Lab1;
 
 import LuyenTap.People;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class ViewProduct extends javax.swing.JFrame {
 
-    private ArrayList<product> listProduct = new ArrayList<>();
     private Interface service = new IServiceProduct();
+    private ArrayList<product> listProduct = service.getList();
+    private String filename = "Lab1.txt";
 
     public ViewProduct() {
         initComponents();
+        service.Insert(new product("Lâm", 281103));
         fillTable();
 
     }
@@ -19,7 +30,7 @@ public class ViewProduct extends javax.swing.JFrame {
     public ArrayList<product> fillTable() {
         DefaultTableModel dtm = (DefaultTableModel) tblTB.getModel();
         dtm.setRowCount(0);
-        for (product pr : service.getList()) {
+        for (product pr : listProduct) {
             dtm.addRow(new Object[]{
                 pr.getTen(), pr.getPrice()
             });
@@ -36,16 +47,22 @@ public class ViewProduct extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Không đc đê trống");
                 return null;
             }
+
         } catch (Exception e) {
         }
         double Price = 0;
         try {
             Price = Double.parseDouble(txtPrice.getText().trim());
-            if (Price == 0) {
-                JOptionPane.showMessageDialog(null, "Không đc đê trống");
+            if (Price < 0) {
+                JOptionPane.showMessageDialog(null, "ko đc nhỏ hơn 0");
                 return null;
             }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Phải là số nguyên dương");
+            throw e;
         }
         product pr = new product(Ten, Price);
         return pr;
@@ -64,6 +81,8 @@ public class ViewProduct extends javax.swing.JFrame {
         btnThem = new javax.swing.JButton();
         btnXoa = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
+        btnDoc = new javax.swing.JButton();
+        btnGhi = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTB = new javax.swing.JTable();
@@ -108,6 +127,20 @@ public class ViewProduct extends javax.swing.JFrame {
             }
         });
 
+        btnDoc.setText("Đọc");
+        btnDoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDocActionPerformed(evt);
+            }
+        });
+
+        btnGhi.setText("Ghi");
+        btnGhi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGhiActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -124,7 +157,7 @@ public class ViewProduct extends javax.swing.JFrame {
                         .addComponent(btnSua)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addGap(18, 18, 18)
                         .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -137,7 +170,12 @@ public class ViewProduct extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(16, 16, 16)
-                .addComponent(btnThem)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnDoc)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnGhi))
+                    .addComponent(btnThem))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -149,7 +187,11 @@ public class ViewProduct extends javax.swing.JFrame {
                     .addComponent(txtTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(txtPrice, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnDoc)
+                    .addComponent(btnGhi))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnThem)
                     .addComponent(btnSua)
@@ -160,7 +202,8 @@ public class ViewProduct extends javax.swing.JFrame {
 
         tblTB.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-
+                {null, null},
+                {null, null}
             },
             new String [] {
                 "Tên", "Price"
@@ -223,6 +266,7 @@ public class ViewProduct extends javax.swing.JFrame {
         }
         service.Insert(pr);
         fillTable();
+
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
@@ -262,6 +306,46 @@ public class ViewProduct extends javax.swing.JFrame {
         txtPrice.setText(tblTB.getValueAt(row, 1).toString());
     }//GEN-LAST:event_tblTBMouseClicked
 
+    private void btnDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocActionPerformed
+        File file = new File(filename);
+        if (file.exists() == false) {
+            System.out.println("file chưa tồn tại ");
+            return;
+        }
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            listProduct = (ArrayList<product>) ois.readObject();
+            service.setList(listProduct);
+            fillTable();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ViewProduct.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDocActionPerformed
+
+    private void btnGhiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGhiActionPerformed
+        File file = new File(filename);
+        if (file.exists() == false) {
+            System.out.println("file chưa tồn tại ");
+            return;
+        }
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(listProduct);
+            System.out.println("Ghi file thành công");
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_btnGhiActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -299,6 +383,8 @@ public class ViewProduct extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnDoc;
+    private javax.swing.JButton btnGhi;
     private javax.swing.JButton btnSua;
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnXoa;

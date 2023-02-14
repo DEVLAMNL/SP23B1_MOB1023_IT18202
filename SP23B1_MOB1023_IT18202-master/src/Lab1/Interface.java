@@ -11,4 +11,6 @@ public interface Interface {
     public void Delete(int i);
 
     public ArrayList<product> getList();
+
+    public void setList(ArrayList<product> list);
 }

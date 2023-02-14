@@ -33,8 +33,15 @@ public class QLProductFrame extends javax.swing.JFrame {
 
     public Product getData() {
         String Name = txtName.getText();
-        double Price = Double.valueOf(txtPrice.getText());
-        Product p = new Product(Name, Price);
+        String Price = txtPrice.getText();
+        if (Name.trim().equals("") || Price.equals("")) {
+            JOptionPane.showMessageDialog(this, "Không được để trống");
+            return null;
+        }
+
+        Double price = Double.parseDouble(Price);
+        Product p = new Product(Name, price);
+        
         return p;
     }
 
@@ -209,23 +216,33 @@ public class QLProductFrame extends javax.swing.JFrame {
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         Product products = getData();
+        if (products == null) {
+            return;
+        }
         iProduct_Service.Insert(products);
         loadTable();
+        clear();
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         Product products = getData();
+        if (products == null) {
+            return;
+        }
         int row = tblTB.getSelectedRow();
         if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Chọn 1 dòng để sửa");
             return;
         }
         iProduct_Service.Update(row, products);
         loadTable();
+        clear();
     }//GEN-LAST:event_btnSuaActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
         int row = tblTB.getSelectedRow();
         if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Chọn 1 dòng để xóa");
             return;
         }
         iProduct_Service.Delete(row);
